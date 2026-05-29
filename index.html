@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WOLFSTATION: BRIDGES CONTRACT</title>
+    <!-- Fonts: Montserrat for tech/clean UI, Jura for Sci-Fi elements -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,500;0,700;0,900;1,400&family=Jura:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ws: {
+                            bg: '#050505',        
+                            tar: '#111111',      
+                            chiralGold: '#fbbf24', 
+                            chiralDark: '#b45309',
+                            beachCyan: '#0ea5e9',
+                            blood: '#dc2626',
+                            fragilePink: '#d946ef',
+                            textMain: '#f8fafc'
+                        }
+                    },
+                    fontFamily: {
+                        epic: ['Jura', 'sans-serif'],
+                        base: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* KOJIMA PRODUCTIONS AESTHETIC - CLEAN, SURREAL, TECH */
+        body {
+            background-color: #050505;
+            color: #f8fafc;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%),
+                url("https://www.transparenttextures.com/patterns/cubes.png");
+        }
+
+        /* Floating Tar/Chiral Matter */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(251, 191, 36, 0.4), rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 50px 70px, rgba(14, 165, 233, 0.2), rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 90px 40px, rgba(0, 0, 0, 0.8), rgba(0,0,0,0));
+            background-size: 150px 150px;
+            animation: tarFloat 25s linear infinite reverse;
+            opacity: 0.7;
+        }
+        @keyframes tarFloat { 0% { transform: translateY(100vh) translateX(-10px); } 100% { transform: translateY(-100vh) translateX(10px); } }
+
+        h1, h2, h3, .font-epic { font-family: 'Jura', sans-serif; letter-spacing: 2px; }
+
+        .animate-float { animation: float 5s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+        /* BRIDGES Glass Panels */
+        .ws-panel {
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.9), rgba(5, 5, 5, 0.95));
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(251, 191, 36, 0.05);
+            border-radius: 8px; 
+            transition: all 0.3s ease; position: relative;
+        }
+        
+        .ws-panel.cyan-border { border-color: rgba(14, 165, 233, 0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 20px rgba(14, 165, 233, 0.05); }
+        .ws-panel.red-border { border-color: rgba(220, 38, 38, 0.4); box-shadow: 0 10px 40px rgba(0,0,0,0.9), inset 0 0 20px rgba(220, 38, 38, 0.1); }
+
+        /* Tech Buttons */
+        .ws-btn {
+            background: rgba(251, 191, 36, 0.1); 
+            color: #fbbf24; font-family: 'Jura', sans-serif; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.15em;
+            border: 1px solid #fbbf24; border-radius: 4px; 
+            padding: 0.75rem 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden;
+        }
+        .ws-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.4), transparent);
+            transition: left 0.5s;
+        }
+        .ws-btn:hover::before { left: 200%; }
+        .ws-btn:hover { background: #fbbf24; color: #000; box-shadow: 0 0 20px rgba(251, 191, 36, 0.6); }
+        .ws-btn:active { transform: scale(0.98); }
+
+        .ws-btn.cyan { background: rgba(14, 165, 233, 0.1); border-color: #0ea5e9; color: #0ea5e9; }
+        .ws-btn.cyan:hover { background: #0ea5e9; color: #000; box-shadow: 0 0 20px rgba(14, 165, 233, 0.6); }
+        
+        .ws-btn.red { background: rgba(220, 38, 38, 0.1); border-color: #dc2626; color: #fca5a5; }
+        .ws-btn.red:hover { background: #dc2626; color: #fff; box-shadow: 0 0 20px rgba(220, 38, 38, 0.6); }
+
+        .ws-btn.dark { background: #111; color: #f8fafc; border-color: #333; }
+        .ws-btn.dark:hover { background: #222; border-color: #fbbf24; color: #fbbf24; }
+        .ws-btn.disabled-btn { opacity: 0.5; pointer-events: none; filter: grayscale(100%); }
+
+        /* Cargo Minigame (Sentence Unscramble) */
+        .cargo-box { background: #111; border: 2px solid #b45309; color: #fbbf24; transition: all 0.2s; cursor: pointer; font-family: 'Jura', sans-serif; padding: 1rem 2rem; font-weight: bold; border-radius: 2px;}
+        .cargo-box:hover { background: #b45309; color: #fff; box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); transform: translateY(-2px);}
+        .cargo-box.hidden-word { opacity: 0; pointer-events: none; transform: scale(0.8); }
+
+        /* Match Minigame */
+        .match-btn { background: rgba(10, 10, 10, 0.8); border: 2px solid #333; color: #94a3b8; transition: all 0.3s; font-family: 'Montserrat', sans-serif; border-radius: 4px; font-weight: 500;}
+        .match-btn:hover:not(.matched) { border-color: #fbbf24; color: #fff; box-shadow: 0 0 10px rgba(251,191,36,0.2);}
+        .match-btn.selected { border-color: #fbbf24; box-shadow: 0 0 15px rgba(251,191,36,0.5); color: #fbbf24; background: rgba(251,191,36,0.1); }
+        .match-btn.matched { background: rgba(14,165,233,0.2); border-color: #0ea5e9; color: #0ea5e9; pointer-events: none; opacity: 0.6; }
+        .match-btn.wrong { border-color: #dc2626; color: #dc2626; animation: shake 0.4s; }
+
+        /* Anomaly/Correction Minigame */
+        .anomaly-word { background: rgba(220, 38, 38, 0.1); color: #fca5a5; border: 1px dashed #dc2626; padding: 2px 10px; border-radius: 4px; cursor: pointer; transition: all 0.3s; font-weight: bold; }
+        .anomaly-word:hover { background: rgba(220, 38, 38, 0.3); box-shadow: 0 0 15px #dc2626; color: #fff;}
+        .anomaly-word.purged { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; border-color: #0ea5e9; pointer-events: none; text-shadow: 0 0 10px #0ea5e9; border-style: solid;}
+        .anomaly-word.wrong { animation: shake 0.4s; background: rgba(220, 38, 38, 0.3); }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        /* Level Layout */
+        .level { display: none; opacity: 0; width: 100%; min-height: 100%; flex-direction: column; position: relative; z-index: 10; padding: 1.5rem; }
+        .level.active { display: flex; animation: fadeLevel 0.6s ease-out forwards; }
+        .level.active::before, .level.active::after { content: ''; margin: auto; }
+        .page-content { margin: auto; width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex-shrink: 0; padding: 1rem 0; }
+        
+        @keyframes fadeLevel { 0% { opacity: 0; filter: blur(10px); transform: scale(0.98); } 100% { opacity: 1; filter: blur(0); transform: scale(1); } }
+
+        /* Loading Screen */
+        #loading-screen { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 1; transition: opacity 1s ease-in-out; }
+        
+        /* Odradek Scanner Minigame */
+        .odradek-container { position: relative; width: 250px; height: 250px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
+        .odradek-pulse { position: absolute; width: 100%; height: 100%; border: 2px solid #0ea5e9; border-radius: 50%; animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite; }
+        .odradek-core { position: absolute; width: 50%; height: 50%; border: 4px dashed #fbbf24; border-radius: 50%; animation: spin 10s linear infinite; }
+        @keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .holo-card-container { display: none; perspective: 1000px; width: 100%; gap: 1.5rem; justify-content: center; align-items: stretch; margin-top: 2rem; }
+        .holo-card-container.active { display: flex; animation: fadeLevel 1s forwards; }
+        .holo-card {
+            flex: 1; background: linear-gradient(135deg, rgba(14,165,233,0.1) 0%, rgba(5,5,5,0.95) 100%);
+            border: 1px solid rgba(14,165,233,0.4); border-radius: 8px; padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); text-align: left;
+        }
+
+        /* BT Encounter / Damage Overlay */
+        #bt-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9000; opacity: 0; transition: opacity 0.3s; box-shadow: inset 0 0 200px rgba(0, 0, 0, 1); background: rgba(0, 0, 0, 0.6); }
+        .bt-attack { animation: flashTar 0.8s forwards; }
+        @keyframes flashTar { 0% { opacity: 1; backdrop-filter: blur(5px); } 100% { opacity: 0; backdrop-filter: blur(0px); } }
+
+        /* Praise Pop-up (Likes System) */
+        .toast-anim { animation: toastUp 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes toastUp { 0% { transform: translate(-50%, 20px) scale(0.8); opacity: 0; } 10% { transform: translate(-50%, 0) scale(1.1); opacity: 1; filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6)); } 15% { transform: translate(-50%, 0) scale(1); opacity: 1; } 90% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(-50%, -20px) scale(0.8); opacity: 0; } }
+
+        .speaking-starter { background: rgba(14, 165, 233, 0.1); border-left: 4px solid #0ea5e9; padding: 1rem; border-radius: 0 4px 4px 0; margin-top: 10px; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #f8fafc; font-style: italic; }
+
+        .nav-bar { width: 100%; max-width: 7xl; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 1rem 0 1rem; flex-shrink: 0; margin-top: auto; z-index: 20; }
+    </style>
+</head>
+<body class="flex flex-col h-screen w-screen selection:bg-ws-chiralGold selection:text-black">
+
+    <div id="bt-overlay"></div>
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="relative w-full max-w-sm md:max-w-md mx-auto mb-8 animate-float flex flex-col items-center">
+            <div class="absolute inset-0 bg-ws-chiralGold blur-[100px] opacity-20 pointer-events-none"></div>
+            <img src="https://m.media-amazon.com/images/M/MV5BYmVkNDM3MzUtN2YyYS00MDg0LWIxN2EtMjQ2ZGQ1ZDhlZWY4XkEyXkFqcGc@._V1_.jpg" alt="DS2 Cover" class="relative z-10 w-full h-auto object-cover rounded-lg shadow-[0_0_40px_rgba(251,191,36,0.3)] border border-ws-chiralDark">
+            <h1 class="text-4xl md:text-5xl font-epic text-white mt-8 tracking-[0.3em] text-center drop-shadow-[0_0_15px_#fbbf24] font-bold">DEATH STRANDING 2</h1>
+            <p class="text-lg font-epic text-ws-beachCyan mt-2 tracking-[0.5em] uppercase">On The Beach</p>
+        </div>
+        
+        <button id="start-btn" onclick="pressStart()" class="font-epic text-xl font-bold text-black bg-ws-chiralGold px-12 py-4 hover:scale-105 transition-all uppercase tracking-widest z-20 shadow-[0_0_30px_rgba(251,191,36,0.5)] rounded">Connect UCA</button>
+        
+        <div id="loading-ui" class="hidden flex-col items-center mt-6 z-20">
+            <i class="fas fa-link text-ws-chiralGold text-3xl mb-4 animate-pulse"></i>
+            <p class="font-epic text-ws-chiralGold tracking-widest uppercase text-sm animate-pulse mb-3 font-bold">Establishing Chiral Network...</p>
+            <p class="font-base text-gray-400 text-sm border border-gray-800 p-3 bg-black/80 max-w-sm text-center shadow-inner rounded">Level B2: Second Conditional. Hypothetical situations.</p>
+        </div>
+    </div>
+
+    <!-- LIKES SYSTEM (PRAISE) -->
+    <div id="praise-popup" class="fixed top-[15%] left-1/2 hidden z-[10000] pointer-events-none transform -translate-x-1/2">
+        <div class="bg-black/95 px-8 py-3 border border-ws-chiralGold flex items-center gap-4 shadow-[0_0_40px_rgba(251,191,36,0.4)] rounded-full">
+            <span id="praise-icon" class="text-2xl text-ws-chiralGold"><i class="fas fa-thumbs-up"></i></span>
+            <span id="praise-text" class="text-ws-chiralGold font-bold text-lg md:text-xl uppercase tracking-widest font-epic"></span>
+        </div>
+    </div>
+
+    <!-- DM TOOLS (DIRECTOR) -->
+    <div id="dm-tools" class="fixed top-[80px] left-4 z-50">
+        <button onclick="toggleTools()" class="bg-black text-gray-400 w-12 h-12 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:scale-110 transition border border-gray-700 hover:border-ws-beachCyan hover:text-ws-beachCyan">
+            <i class="fas fa-terminal text-xl"></i>
+        </button>
+        <div id="tools-panel" class="absolute top-14 left-0 ws-panel p-6 w-80 hidden flex-col gap-4 border-l-4 border-l-ws-beachCyan">
+            <h3 class="font-epic text-ws-beachCyan text-lg font-bold tracking-widest border-b border-gray-700 pb-2 text-center">BRIDGES ADMIN</h3>
+            
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <button onclick="addLikes(50)" class="ws-btn dark py-2 text-sm rounded">+50 LIKES</button>
+                <button onclick="addLikes(200)" class="ws-btn dark py-2 text-sm rounded">+200 LIKES</button>
+            </div>
+            
+            <button onclick="triggerBT()" class="bg-black border border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white py-3 text-sm flex items-center justify-center gap-2 mt-2 rounded font-epic font-bold transition-colors uppercase">
+                <i class="fas fa-ghost"></i> Spawn BT (Interference)
+            </button>
+        </div>
+    </div>
+
+    <!-- TOP HUD -->
+    <header class="h-16 shrink-0 bg-black/90 backdrop-blur-md border-b border-ws-chiralDark z-40 flex items-center justify-between px-4 md:px-8 relative shadow-lg">
+        <div class="flex items-center gap-4 md:gap-6">
+            <div class="flex flex-col">
+                <span class="text-[9px] text-gray-500 tracking-widest uppercase font-bold font-epic">Bridges ID</span>
+                <span id="hud-player-name" class="text-sm text-white font-bold uppercase tracking-wider font-epic text-ws-chiralGold">Sam Porter Teacher</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 md:gap-4">
+            <!-- LIKES (XP) -->
+            <div class="flex items-center gap-3 bg-blue-900/20 px-5 py-2 rounded border border-ws-beachCyan/30 hidden lg:flex shadow-inner">
+                <i class="fas fa-thumbs-up text-ws-beachCyan"></i>
+                <span id="xp-counter" class="font-epic font-bold text-lg text-white tracking-widest">0 LIKES</span>
+            </div>
+            
+            <button onclick="toggleFullscreen()" class="font-base text-[10px] md:text-xs font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-widest hidden sm:block border border-gray-800 px-3 py-1.5 rounded">
+                [ Fullscreen ]
+            </button>
+
+            <button onclick="toggleNotes()" class="font-epic text-[10px] md:text-xs font-bold ws-btn py-2 px-4 !bg-transparent !text-ws-chiralGold border-ws-chiralGold">
+                <i class="fas fa-suitcase mr-1"></i> CARGO LOG
+            </button>
+        </div>
+    </header>
+
+    <!-- CARGO LOG (NOTES) -->
+    <div id="notes-panel" class="fixed top-16 bottom-16 right-0 w-full max-w-md bg-black/95 backdrop-blur-3xl border-l border-ws-chiralDark z-50 translate-x-full flex flex-col shadow-[-20px_0px_50px_rgba(0,0,0,0.9)] transition-transform duration-500 text-white">
+        <div class="p-4 border-b border-gray-800 bg-[#0a0a0a] flex justify-between items-center shrink-0">
+            <h2 class="font-bold uppercase tracking-widest text-sm md:text-base flex items-center gap-2 text-ws-chiralGold font-epic">
+                <i class="fas fa-suitcase"></i> Cargo Log (Notes)
+            </h2>
+            <button onclick="toggleNotes()" class="text-gray-500 hover:text-white font-black text-2xl px-2 transition-colors">✕</button>
+        </div>
+        <div class="flex-1 w-full p-6 overflow-hidden flex flex-col bg-[#050505]">
+            <p class="text-[10px] font-epic text-gray-500 uppercase tracking-widest mb-3 font-bold border-b border-gray-800 pb-2">Philosophical Records</p>
+            <textarea id="class-notes" class="flex-1 w-full bg-transparent text-gray-300 border-none outline-none font-base text-lg leading-relaxed resize-none placeholder-gray-700" placeholder="> Input thoughts, vocabulary, and grammar rules here..."></textarea>
+        </div>
+    </div>
+
+    <main class="flex-1 w-full relative z-10 overflow-y-auto scroll-smooth pt-4 pb-16 double-click-area">
+        <div class="w-full h-full relative" id="levels-container">
+            
+            <!-- PAGE 1: TEACHER'S GUIDE -->
+            <section class="level active">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-chiralGold">Director's Cut</h2>
+                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight font-epic uppercase">Mission Briefing</h1>
+                    
+                    <div class="ws-panel p-8 md:p-12 max-w-3xl w-full text-lg leading-relaxed text-gray-300 text-left border-l-4 border-ws-chiralGold">
+                        <p class="mb-6 font-bold text-2xl border-b border-gray-700 pb-4 text-white uppercase flex items-center gap-3 font-epic">
+                            <span class="text-3xl text-ws-beachCyan"><i class="fas fa-network-wired"></i></span> Target: Upper-Intermediate (B2).
+                        </p>
+                        <p class="mb-6 font-base">Welcome to the Beach. This is a highly philosophical and conversational lesson inspired by Hideo Kojima's universe. The focus is on deep discussions about connections, isolation, and humanity.</p>
+                        <div class="bg-black/60 p-6 border border-gray-800 rounded shadow-inner">
+                            <h3 class="font-epic uppercase text-sm mb-4 text-ws-chiralGold tracking-widest font-bold">Grammar & Lore Goals:</h3>
+                            <ul class="list-none pl-1 space-y-4 font-base text-lg font-medium">
+                                <li class="flex items-start gap-4"><span class="text-2xl text-ws-beachCyan mt-1"><i class="fas fa-code-branch"></i></span> <div><strong>Second Conditional:</strong> "If I were isolated, I would..." Master unreal/hypothetical present and future scenarios.</div></li>
+                                <li class="flex items-start gap-4"><span class="text-2xl text-ws-chiralGold mt-1"><i class="fas fa-brain"></i></span> <div><strong>Philosophy & Debate:</strong> Discuss the trolley problem, social media "Likes", and the meaning of connection.</div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <div class="w-32"></div>
+                    <button onclick="nextPage()" class="ws-btn px-10 py-4 text-lg">RECONNECT THE WORLD <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 2: CLASS SELECTION -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold text-4xl md:text-5xl text-white mb-4 text-center tracking-widest drop-shadow-[0_0_15px_rgba(251,191,36,0.3)] uppercase">Choose your Role</h2>
+                    <p class="text-xl text-gray-400 font-base text-center mb-10 italic">"We are all connected by strands. Which strand are you?"</p>
+                    
+                    <div class="max-w-5xl w-full">
+                        <input type="text" id="player-name-input" placeholder="ENTER YOUR ID" class="bg-black/80 border border-gray-600 text-white text-center font-epic text-2xl py-4 px-8 uppercase tracking-widest focus:border-ws-chiralGold focus:shadow-[0_0_15px_rgba(251,191,36,0.3)] outline-none w-full mb-10 rounded">
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="class-card p-8 text-center bg-black/50 border border-gray-700 rounded transition-all cursor-pointer hover:border-ws-chiralGold" onclick="selectClass('PORTER', 'fa-box', this)">
+                                <i class="fas fa-box text-5xl text-ws-chiralGold mb-6 drop-shadow-md"></i>
+                                <h3 class="font-epic font-bold text-2xl text-white mb-2 tracking-widest">THE PORTER</h3>
+                                <p class="text-gray-400 font-base border-t border-gray-800 pt-4 text-lg">The Delivery Man.</p>
+                                <p class="text-sm text-gray-500 mt-2">You connect isolated people by delivering essential cargo.</p>
+                            </div>
+                            <div class="class-card p-8 text-center bg-black/50 border border-gray-700 rounded transition-all cursor-pointer hover:border-ws-beachCyan" onclick="selectClass('BB OPERATOR', 'fa-baby', this)">
+                                <i class="fas fa-baby text-5xl text-ws-beachCyan mb-6 drop-shadow-md"></i>
+                                <h3 class="font-epic font-bold text-2xl text-white mb-2 tracking-widest">BB OPERATOR</h3>
+                                <p class="text-gray-400 font-base border-t border-gray-800 pt-4 text-lg">The Bridge.</p>
+                                <p class="text-sm text-gray-500 mt-2">You can sense the dead and navigate dangerous territories.</p>
+                            </div>
+                            <div class="class-card p-8 text-center bg-black/50 border border-gray-700 rounded transition-all cursor-pointer hover:border-ws-fragilePink" onclick="selectClass('FRAGILE EXPRESS', 'fa-umbrella', this)">
+                                <i class="fas fa-umbrella text-5xl text-ws-fragilePink mb-6 drop-shadow-md"></i>
+                                <h3 class="font-epic font-bold text-2xl text-white mb-2 tracking-widest">FRAGILE</h3>
+                                <p class="text-gray-400 font-base border-t border-gray-800 pt-4 text-lg">The Jumper.</p>
+                                <p class="text-sm text-gray-500 mt-2">You use the Beach to teleport and move incredibly fast.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button id="btn-confirm-char" onclick="confirmCharacter()" class="ws-btn px-10 py-4 text-lg disabled-btn" disabled>CONFIRM ID <i class="fas fa-fingerprint ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 3: WARM UP 1 -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-chiralGold">Private Room</h2>
+                    <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">Isolation</h1>
+                    
+                    <div class="ws-panel p-10 max-w-3xl w-full text-center hover:border-ws-chiralGold transition-colors border-t-4 border-ws-chiralGold">
+                        <span class="text-6xl mb-8 block drop-shadow-lg opacity-80">🚪</span>
+                        <p class="text-2xl md:text-3xl font-medium mb-10 text-gray-200 leading-relaxed font-base">
+                            "In the game, humanity lives in isolated bunkers because the outside world is too dangerous. How do you feel about isolation? Do we need other people to survive?"
+                        </p>
+                        <div class="bg-black/50 p-6 rounded border-l-4 border-ws-chiralGold text-left shadow-inner">
+                            <p class="font-bold text-ws-chiralGold text-xs mb-4 tracking-widest uppercase font-epic">🗣️ Discuss:</p>
+                            <div class="speaking-starter">"I think isolation is [ dangerous / necessary / peaceful ] because..."</div>
+                            <div class="speaking-starter">"If I lived in a bunker forever, I would probably..."</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-8 py-4 text-lg">NEXT <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 4: WARM UP 2 -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-beachCyan">Private Room</h2>
+                    <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">The End</h1>
+                    
+                    <div class="ws-panel p-10 max-w-3xl w-full text-center hover:border-ws-beachCyan transition-colors border-t-4 border-ws-beachCyan">
+                        <span class="text-6xl mb-8 block drop-shadow-[0_0_15px_#0ea5e9]">🌊</span>
+                        <p class="text-2xl md:text-3xl font-medium mb-10 text-gray-200 leading-relaxed font-base">
+                            "Death Stranding deals with the 'Sixth Extinction'. If you knew the world was going to end in one year, what would you change about your life today?"
+                        </p>
+                        <div class="bg-black/50 p-6 rounded border-l-4 border-ws-beachCyan text-left shadow-inner">
+                            <p class="font-bold text-ws-beachCyan text-xs mb-4 tracking-widest uppercase font-epic">🗣️ Discuss:</p>
+                            <div class="speaking-starter !border-ws-beachCyan !bg-sky-900/20">"If the world ended in a year, I would..."</div>
+                            <div class="speaking-starter !border-ws-beachCyan !bg-sky-900/20">"I wouldn't care about [ money / work / stress ] anymore."</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-8 py-4 text-lg">ACCESS LORE <i class="fas fa-database ml-2"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 5: PRE-TEACHING & LORE -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-gray-500">Archive 01</h2>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">The Death Stranding</h1>
+                    
+                    <div class="ws-panel p-10 max-w-4xl mx-auto w-full text-left border-l-4 border-gray-500 bg-black/80 shadow-2xl">
+                        <p class="text-xl text-gray-300 font-medium font-base leading-relaxed mb-8">Before we watch the trailer, you need to understand the world. An event called the <strong class="text-white">"Death Stranding"</strong> changed everything.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-base">
+                            <div class="bg-black p-6 border border-gray-700 shadow-inner rounded">
+                                <p class="text-ws-blood font-bold font-epic text-lg mb-3 tracking-widest uppercase border-b border-gray-800 pb-2"><i class="fas fa-ghost mr-2"></i> BTs (Beached Things)</p>
+                                <p class="text-gray-400">Invisible monsters from the world of the dead. If they catch a human, they create a massive explosion called a <strong class="text-white">Voidout</strong>.</p>
+                            </div>
+                            <div class="bg-black p-6 border border-gray-700 shadow-inner rounded">
+                                <p class="text-ws-beachCyan font-bold font-epic text-lg mb-3 tracking-widest uppercase border-b border-gray-800 pb-2"><i class="fas fa-cloud-showers-heavy mr-2"></i> Timefall</p>
+                                <p class="text-gray-400">A toxic rain that accelerates time. Anything the rain touches ages and dies instantly. This is why people live in bunkers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-8 py-4 text-lg">ACTIVATE SCANNER <i class="fas fa-satellite-dish ml-2"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 6: ACTIVE VOCABULARY (ODRADEK SCANNER) -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-chiralGold drop-shadow-md">Terrain Analysis</h2>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight uppercase font-epic">Odradek Scanner</h1>
+                    <p class="text-lg font-base bg-black/60 px-6 py-3 border border-gray-700 mb-10 text-gray-300 rounded shadow-inner">Click the scanner to emit a pulse and reveal the Lore Vocabulary.</p>
+
+                    <div id="odradek-trigger" class="odradek-container mb-12" onclick="triggerOdradekScan()">
+                        <div class="odradek-pulse"></div>
+                        <div class="odradek-core flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                            <i class="fas fa-satellite-dish text-4xl text-ws-chiralGold"></i>
+                        </div>
+                    </div>
+
+                    <div id="holo-cards" class="holo-card-container flex-col md:flex-row">
+                        <!-- Card 1 -->
+                        <div class="holo-card font-base group relative">
+                            <h3 class="font-epic font-bold text-xl mb-3 text-ws-beachCyan tracking-widest">STRAND</h3>
+                            <p class="text-gray-300 mb-4 font-medium leading-relaxed">A connection, a thread, or a bond between people. (Literally: a rope or string).</p>
+                            
+                            <div class="mt-4 pt-4 border-t border-ws-beachCyan/30">
+                                <p class="text-[10px] text-ws-beachCyan uppercase tracking-widest mb-2 font-bold font-epic">Follow-up:</p>
+                                <p class="text-sm text-gray-400 italic">"Who is the strongest 'strand' (connection) in your life right now?"</p>
+                            </div>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="holo-card font-base group relative">
+                            <h3 class="font-epic font-bold text-xl mb-3 text-white tracking-widest">CHIRAL</h3>
+                            <p class="text-gray-300 mb-4 font-medium leading-relaxed">Related to mirror images, like left and right hands. In the game, a powerful, dangerous energy.</p>
+                            
+                            <div class="mt-4 pt-4 border-t border-white/30">
+                                <p class="text-[10px] text-white uppercase tracking-widest mb-2 font-bold font-epic">Follow-up:</p>
+                                <p class="text-sm text-gray-400 italic">"If you found a dangerous but powerful energy source, would you use it?"</p>
+                            </div>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="holo-card font-base !border-red-900 !bg-[linear-gradient(135deg,rgba(153,27,27,0.1)_0%,rgba(5,5,5,0.95)_100%)] group relative">
+                            <h3 class="font-epic font-bold text-xl mb-3 text-red-500 tracking-widest">EXTINCTION</h3>
+                            <p class="text-gray-300 mb-4 font-medium leading-relaxed">The complete destruction and end of a species.</p>
+                            
+                            <div class="mt-4 pt-4 border-t border-red-900/50">
+                                <p class="text-[10px] text-red-500 uppercase tracking-widest mb-2 font-bold font-epic">Follow-up:</p>
+                                <p class="text-sm text-gray-400 italic">"Do you think humanity will face extinction soon?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button id="btn-scan-next" onclick="nextPage()" class="ws-btn px-10 py-4 text-lg hidden fade-in">PROCEED <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 7: PRE-VIDEO WARNING -->
+            <section class="level">
+                <div class="page-content">
+                    <div class="max-w-4xl ws-panel p-16 md:p-20 text-center w-full relative border-t-4 border-ws-chiralGold">
+                        <i class="fas fa-video text-6xl md:text-7xl text-ws-chiralGold mb-10 drop-shadow-[0_0_20px_#fbbf24] animate-pulse"></i>
+                        <h2 class="font-epic font-bold text-4xl md:text-5xl text-white mb-8 leading-relaxed tracking-widest uppercase">
+                            Data Archival
+                        </h2>
+                        <p class="text-2xl font-base text-gray-300 font-medium mb-6">Watch the trailer for Death Stranding 2. It is highly surreal and cinematic.</p>
+                        <p class="text-lg text-ws-chiralGold font-bold font-epic tracking-widest border border-ws-chiralGold/30 bg-yellow-900/10 inline-block px-6 py-3">Should we have connected?</p>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-12 py-5 text-xl uppercase">WATCH TRAILER</button>
+                </div>
+            </section>
+
+            <!-- PAGE 8: THE TRAILER (Layout Fixed) -->
+            <section class="level">
+                <div class="page-content h-full w-full max-w-6xl mx-auto flex flex-col justify-center">
+                    <h2 class="font-epic font-bold tracking-[0.2em] mb-2 uppercase text-sm text-ws-beachCyan text-center drop-shadow-md">Cinematic Vision</h2>
+                    <h1 class="text-3xl md:text-4xl font-bold uppercase mb-6 text-center text-white font-epic">On The Beach</h1>
+                    
+                    <div class="w-full max-w-5xl mx-auto aspect-video border border-gray-700 shadow-[0_0_40px_rgba(0,0,0,0.9)] relative shrink-0 bg-black p-1 rounded max-h-[60vh]">
+                        <!-- Death Stranding 2 Trailer -->
+                        <iframe class="w-full h-full rounded" src="https://www.youtube.com/embed/F79oEkMXElU?rel=0" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="nav-bar mt-auto">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-10 py-4 text-lg">NEXT PHASE <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 9: POST-VIDEO IMPRESSIONS -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-chiralGold">Debriefing</h2>
+                    <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">Surrealism</h1>
+                    
+                    <div class="ws-panel p-10 max-w-4xl w-full text-center border-t-4 border-ws-chiralGold">
+                        <span class="text-6xl mb-8 block opacity-80">🎭</span>
+                        <p class="text-2xl md:text-3xl font-medium mb-10 text-gray-200 leading-relaxed font-base">
+                            "Hideo Kojima's trailers are famously weird and confusing. What was the strangest thing you saw?"
+                        </p>
+                        <div class="bg-black/60 p-6 rounded border border-gray-700 text-left shadow-inner">
+                            <p class="font-bold text-ws-chiralGold font-epic text-sm mb-4 tracking-widest uppercase">🗣️ Discuss:</p>
+                            <div class="speaking-starter">"The weirdest thing I saw was..."</div>
+                            <div class="speaking-starter">"I felt [ confused / amazed / disturbed ] when I saw..."</div>
+                            <div class="speaking-starter">"The game looks like a mix of sci-fi and..."</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-8 py-4 text-lg">LEARN GRAMMAR <i class="fas fa-book ml-2"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 10: GRAMMAR INTRO 1 -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-beachCyan">Theory</h2>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">Second Conditional</h1>
+                    
+                    <div class="ws-panel p-8 md:p-12 max-w-4xl mx-auto w-full text-left shadow-2xl border-l-4 border-ws-beachCyan">
+                        <p class="text-2xl font-bold mb-6 text-white font-base">We use the <strong class="text-ws-beachCyan uppercase tracking-widest">Second Conditional</strong> to talk about <strong class="text-ws-chiralGold">imaginary, hypothetical, or unlikely</strong> situations in the present or future.</p>
+                        
+                        <div class="bg-black/80 p-6 md:p-8 rounded border border-gray-700 space-y-6 font-base">
+                            <p class="text-lg text-gray-400">It explores the "What If".</p>
+                            
+                            <div class="space-y-6 pt-4 border-t border-gray-800">
+                                <div class="bg-blue-900/10 p-4 border-l-2 border-ws-beachCyan rounded">
+                                    <p class="text-xl text-white font-medium">
+                                        "If I <span class="text-ws-beachCyan font-bold">lived</span> on the Beach, I <span class="text-ws-chiralGold font-bold">would go</span> crazy."
+                                    </p>
+                                    <p class="text-sm text-gray-500 mt-2 font-epic tracking-widest">(Reality: I don't live on the beach, so I am not crazy.)</p>
+                                </div>
+                                <div class="bg-blue-900/10 p-4 border-l-2 border-ws-beachCyan rounded">
+                                    <p class="text-xl text-white font-medium">
+                                        "If we <span class="text-ws-beachCyan font-bold">had</span> the Chiral Network, we <span class="text-ws-chiralGold font-bold">would be</span> connected."
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-12 py-5 text-lg">NEXT RULE <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 11: GRAMMAR INTRO 2 -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-chiralGold">Theory</h2>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">Structure</h1>
+                    
+                    <div class="ws-panel p-8 md:p-12 max-w-4xl mx-auto w-full text-left shadow-2xl border-l-4 border-ws-chiralGold">
+                        <div class="bg-black/80 p-6 md:p-8 rounded border border-gray-700 font-base text-center">
+                            
+                            <p class="text-3xl font-bold text-white mb-8 tracking-wide">
+                                IF + <span class="text-ws-beachCyan">PAST SIMPLE</span>, <br class="md:hidden">... + <span class="text-ws-chiralGold">WOULD</span> + <span class="text-gray-400">VERB (Base)</span>
+                            </p>
+
+                            <div class="text-left space-y-6 border-t border-gray-800 pt-8">
+                                <p class="text-xl text-gray-300 font-bold border-b border-gray-800 pb-2">Important Rule (Verb To Be):</p>
+                                <p class="text-lg text-gray-300 leading-relaxed">
+                                    In the Second Conditional, we traditionally use <strong class="text-white text-xl">WERE</strong> for <strong class="text-red-400">all</strong> subjects (I, You, He, She, It, We, They).
+                                </p>
+                                <div class="bg-yellow-900/10 p-4 border-l-2 border-ws-chiralGold rounded mt-4">
+                                    <p class="text-2xl text-white font-medium italic">
+                                        "If I <span class="text-ws-beachCyan font-bold">were</span> you, I <span class="text-ws-chiralGold font-bold">would run</span>."
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-12 py-5 text-lg">NEXT RULE <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 12: GRAMMAR INTRO 3 -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-beachCyan">Theory</h2>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">Questions</h1>
+                    
+                    <div class="ws-panel p-8 md:p-12 max-w-4xl mx-auto w-full text-left shadow-2xl border-l-4 border-ws-beachCyan">
+                        <div class="bg-black/80 p-6 md:p-8 rounded border border-gray-700 space-y-6 font-base">
+                            
+                            <p class="text-xl text-gray-300 leading-relaxed mb-6">
+                                To ask hypothetical questions, we invert <strong class="text-ws-chiralGold">WOULD</strong> and the Subject.
+                            </p>
+
+                            <div class="bg-blue-900/10 p-6 border-l-2 border-ws-beachCyan rounded">
+                                <p class="text-sm font-epic text-ws-beachCyan uppercase tracking-widest mb-3 font-bold">The Ultimate Question:</p>
+                                <p class="text-3xl text-white font-bold mb-4">
+                                    "What <span class="text-ws-chiralGold">would</span> you <span class="text-gray-300">do</span> if the world <span class="text-ws-beachCyan">ended</span>?"
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-12 py-5 text-lg">ENTER TRIALS <i class="fas fa-box ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 13: TRIAL 1 -->
+            <section class="level">
+                <div class="page-content">
+                    <div class="max-w-4xl w-full">
+                        <h2 class="font-epic font-bold text-3xl md:text-4xl text-white mb-8 text-center tracking-widest uppercase">TRIAL 1: THE HYPOTHESIS</h2>
+                        <div class="ws-panel p-10 md:p-14 w-full text-center bg-black/60 border-t-4 border-t-ws-chiralGold">
+                            <p class="text-xl md:text-2xl text-gray-300 mb-8 font-base font-medium">Choose the correct verb to complete the conditional:</p>
+                            <div class="bg-black/90 p-8 rounded border border-gray-700 mb-10 shadow-inner">
+                                <p class="text-2xl md:text-4xl text-white font-bold tracking-wide font-base leading-relaxed">"If the internet <span class="text-ws-beachCyan underline decoration-2 underline-offset-4">stopped</span> working forever, we ________ isolated."</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto font-base font-bold">
+                                <button onclick="checkTrialAnswer(this, true)" class="ws-btn dark py-5 text-xl text-center rounded">A) would be</button>
+                                <button onclick="checkTrialAnswer(this, false)" class="ws-btn dark py-5 text-xl text-center rounded">B) will be</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-10 py-4 text-lg">CONTINUE <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 14: TRIAL 2 -->
+            <section class="level">
+                <div class="page-content">
+                    <div class="max-w-4xl w-full">
+                        <h2 class="font-epic font-bold text-3xl md:text-4xl text-white mb-8 text-center tracking-widest uppercase">TRIAL 2: THE RULE OF "TO BE"</h2>
+                        <div class="ws-panel p-10 md:p-14 w-full text-center bg-black/60 border-t-4 border-t-ws-beachCyan">
+                            <p class="text-xl md:text-2xl text-gray-300 mb-8 font-base font-medium">Remember the rule for the verb "To Be" in the Second Conditional:</p>
+                            <div class="bg-black/90 p-8 rounded border border-gray-700 mb-10 shadow-inner">
+                                <p class="text-2xl md:text-4xl text-white font-bold tracking-wide font-base leading-relaxed">"If Sam ________ here, he <span class="text-ws-chiralGold underline decoration-2 underline-offset-4">would deliver</span> the cargo."</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto font-base font-bold">
+                                <button onclick="checkTrialAnswer(this, false)" class="ws-btn dark py-5 text-xl text-center rounded">A) was</button>
+                                <button onclick="checkTrialAnswer(this, true)" class="ws-btn dark py-5 text-xl text-center rounded">B) were</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-10 py-4 text-lg">CONTINUE <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- NEW PAGE 15: TRIAL 3 (CHIRAL MATCHING) -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold text-3xl md:text-4xl text-ws-chiralGold mb-6 text-center tracking-widest uppercase">TRIAL 3: CAUSE & EFFECT</h2>
+                    <p class="text-gray-300 text-xl font-base font-medium mb-8 text-center max-w-3xl mx-auto">Link the hypothetical situation to its logical consequence to complete the mission.</p>
+                    
+                    <div class="ws-panel p-8 md:p-12 w-full max-w-5xl flex flex-col md:flex-row gap-6 md:gap-10 relative bg-black/40 border-t-4 border-ws-chiralGold">
+                        <div class="flex-1 flex flex-col gap-4">
+                            <button class="match-btn text-left p-5 text-xl font-bold flex items-center justify-between" onclick="selectMatchSci(this, 'left', 1)">"If I lost my BB (Bridge Baby)..."</button>
+                            <button class="match-btn text-left p-5 text-xl font-bold flex items-center justify-between" onclick="selectMatchSci(this, 'left', 2)">"If we didn't have the Chiral Network..."</button>
+                            <button class="match-btn text-left p-5 text-xl font-bold flex items-center justify-between" onclick="selectMatchSci(this, 'left', 3)">"If Timefall touched your skin..."</button>
+                        </div>
+                        <div class="hidden md:flex flex-col items-center justify-center opacity-50 px-4">
+                            <i class="fas fa-link text-4xl text-ws-chiralGold"></i>
+                        </div>
+                        <div class="flex-1 flex flex-col gap-4">
+                            <button class="match-btn text-right p-5 text-lg font-base" onclick="selectMatchSci(this, 'right', 2)">"...humanity would remain isolated forever."</button>
+                            <button class="match-btn text-right p-5 text-lg font-base" onclick="selectMatchSci(this, 'right', 3)">"...it would age you rapidly."</button>
+                            <button class="match-btn text-right p-5 text-lg font-base" onclick="selectMatchSci(this, 'right', 1)">"...I wouldn't be able to see the BTs."</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button id="btn-match-next" onclick="nextPage()" class="ws-btn px-10 py-4 text-lg hidden fade-in">PROCEED <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- NEW PAGE 16: TRIAL 4 (DATA CORRUPTION) -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold text-3xl md:text-4xl text-red-500 mb-6 text-center tracking-widest uppercase drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]">TRIAL 4: DATA CORRUPTION</h2>
+                    <p class="text-gray-300 text-xl font-base mb-10 text-center">A voidout is imminent! The log below has a grammar error. Click the incorrect verb to fix the Second Conditional.</p>
+                    
+                    <div class="ws-panel p-12 md:p-20 w-full max-w-5xl text-center bg-black/60 border-t-4 border-t-red-500 shadow-[0_0_50px_rgba(220,38,38,0.15)] relative overflow-hidden">
+                        
+                        <p class="text-3xl md:text-4xl leading-[2em] font-base text-gray-300 bg-black/80 p-12 rounded border border-red-500/30 shadow-[inset_0_0_20px_rgba(220,38,38,0.2)] relative z-10 italic">
+                            "If the world <span class="anomaly-word" onclick="checkAnomaly(this, true)" data-correct="ended">will end</span> tomorrow, I <span class="anomaly-word" onclick="checkAnomaly(this, false)">would spend</span> it with my family."
+                        </p>
+                        
+                        <p class="text-lg text-red-500 mt-8 font-epic uppercase tracking-widest animate-pulse relative z-10"><i class="fas fa-exclamation-triangle mr-2"></i> Identify the corrupted syntax.</p>
+                        
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-10 py-4 text-lg">CONTINUE <i class="fas fa-arrow-right ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- NEW PAGE 17: POST-TEACHING DEBATE -->
+            <section class="level">
+                <div class="page-content">
+                    <div class="w-full max-w-6xl">
+                        <h2 class="text-4xl md:text-5xl font-epic font-bold text-ws-beachCyan mb-10 text-center tracking-widest uppercase">THE ETHICS OF CONNECTION</h2>
+                        <div class="ws-panel p-12 md:p-16 w-full text-center bg-black/80 relative shadow-[0_0_50px_rgba(14,165,233,0.15)]">
+                            <p class="text-xl text-gray-400 font-epic uppercase tracking-[0.3em] mb-6">The Trolley Problem</p>
+                            <h3 class="text-3xl md:text-4xl text-white mb-10 font-base font-medium leading-tight">
+                                "If you had to force an isolated bunker to join the network to save humanity, would you do it?"
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mx-auto font-epic uppercase tracking-widest text-xl">
+                                <button onclick="selectStance(this)" data-stance="connect" class="ws-btn py-6 rounded hover:scale-105 transition">Yes, I would force them.</button>
+                                <button onclick="selectStance(this)" data-stance="isolate" class="ws-btn dark py-6 rounded hover:scale-105 transition border-2 border-gray-600 hover:border-white">No, I would leave them alone.</button>
+                            </div>
+
+                            <div id="stance-followup" class="hidden mt-12 bg-black p-8 border border-ws-beachCyan/30 text-left rounded shadow-inner fade-in">
+                                <i class="fas fa-microphone-alt text-3xl text-ws-beachCyan mb-4"></i>
+                                <p class="text-2xl text-white font-base font-bold">Defend your choice. <span class="text-ws-beachCyan font-epic">What would happen next?</span></p>
+                                <p class="text-gray-400 mt-4 text-lg font-base italic">"If I forced them, they would..." / "If I left them alone, the network would..."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-10 py-4 text-lg">DELIVER <i class="fas fa-box-open ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 18: MISSION SUCCESS -->
+            <section class="level">
+                <div class="page-content">
+                    <div class="w-full max-w-5xl text-center flex flex-col items-center">
+                        <i class="fas fa-thumbs-up text-[8rem] text-ws-beachCyan mb-8 drop-shadow-[0_0_50px_rgba(14,165,233,0.6)] animate-bounce"></i>
+                        <h2 class="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tighter font-epic uppercase">DELIVERY COMPLETE</h2>
+                        <div class="ws-panel p-10 md:p-16 bg-black/60 border border-ws-beachCyan/30 max-w-4xl w-full shadow-inner">
+                            <p class="text-2xl md:text-3xl text-gray-200 font-base font-medium leading-relaxed mb-8">
+                                You successfully connected the knot to the Chiral Network. The world is a bit smaller now.
+                            </p>
+                            <p class="text-3xl font-epic font-bold text-ws-chiralGold drop-shadow-[0_0_10px_#fbbf24]">+ 500 LIKES RECEIVED</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-12 py-5 text-xl shadow-[0_0_30px_rgba(14,165,233,0.4)] uppercase">Return to Private Room</button>
+                </div>
+            </section>
+
+            <!-- PAGE 19: REAL LIFE DISCUSSION 1 -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-chiralGold">Society Analysis</h2>
+                    <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">The "Likes" System</h1>
+                    
+                    <div class="ws-panel p-8 md:p-12 max-w-4xl w-full text-center border-t-4 border-ws-chiralGold">
+                        <span class="text-6xl mb-8 block opacity-90 drop-shadow-[0_0_15px_#fbbf24]">👍</span>
+                        <p class="text-2xl md:text-3xl font-bold mb-10 text-white leading-relaxed font-base">
+                            "In Death Stranding, the only reward you get is 'Likes' from other players. How does this compare to social media today? Are we addicted to 'Likes'?"
+                        </p>
+                        <div class="bg-black/60 p-6 rounded border border-gray-700 text-left shadow-inner">
+                            <p class="font-bold text-ws-chiralGold font-epic text-sm mb-4 tracking-widest uppercase">🗣️ Discuss:</p>
+                            <div class="speaking-starter">"I think social media likes are [ toxic / motivating ] because..."</div>
+                            <div class="speaking-starter">"If Instagram removed the 'Like' button, people would..."</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-8 py-4 text-lg">NEXT <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 20: REAL LIFE DISCUSSION 2 -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-beachCyan">Society Analysis</h2>
+                    <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">Modern Isolation</h1>
+                    
+                    <div class="ws-panel p-8 md:p-12 max-w-4xl w-full text-center border-t-4 border-ws-beachCyan">
+                        <span class="text-6xl mb-8 block opacity-90 drop-shadow-[0_0_15px_#0ea5e9]">📱</span>
+                        <p class="text-2xl md:text-3xl font-bold mb-10 text-white leading-relaxed font-base">
+                            "We are more 'connected' than ever through the internet, yet many people feel extremely isolated and lonely. Why do you think this happens?"
+                        </p>
+                        <div class="bg-black/60 p-6 rounded border border-gray-700 text-left shadow-inner">
+                            <p class="font-bold text-ws-beachCyan font-epic text-sm mb-4 tracking-widest uppercase">🗣️ Discuss:</p>
+                            <div class="speaking-starter !border-ws-beachCyan !bg-sky-900/20">"Even though we have the internet, people feel lonely because..."</div>
+                            <div class="speaking-starter !border-ws-beachCyan !bg-sky-900/20">"If we spent less time online, we would..."</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-8 py-4 text-lg">HOMEWORK <i class="fas fa-book ml-2"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 21: HOMEWORK / SIDE QUEST -->
+            <section class="level">
+                <div class="page-content">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-ws-chiralGold">Assignment</h2>
+                    <h1 class="text-3xl md:text-5xl font-bold text-white mb-8 tracking-tight uppercase font-epic">Bridges Protocol</h1>
+                    
+                    <div class="ws-panel p-8 md:p-12 max-w-4xl mx-auto w-full relative bg-black border border-ws-chiralGold text-left shadow-2xl">
+                        <div class="absolute -top-4 -right-4 bg-ws-chiralGold text-black font-black uppercase tracking-widest px-4 py-2 text-sm font-epic shadow-[0_0_15px_#fbbf24]">HOMEWORK</div>
+                        <p class="text-2xl font-bold mb-6 text-white font-base border-b border-gray-800 pb-4">
+                            "Write 4 hypothetical sentences about the future or your life."
+                        </p>
+                        <ul class="list-disc pl-6 text-lg font-medium space-y-4 text-gray-400 font-base">
+                            <li>Write 2 sentences using <strong class="text-ws-beachCyan font-bold">Second Conditional (If... would)</strong> (e.g. "If I lived in the USA, I would visit New York.").</li>
+                            <li>Write 2 sentences using <strong class="text-ws-chiralGold font-bold">Second Conditional (Negative)</strong> (e.g. "If I were rich, I wouldn't work.").</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <button onclick="prevPage()" class="text-gray-500 hover:text-white uppercase font-epic font-bold tracking-widest transition text-sm"><i class="fas fa-arrow-left mr-2"></i> Back</button>
+                    <button onclick="nextPage()" class="ws-btn px-12 py-5 text-xl">REST <i class="fas fa-bed ml-3"></i></button>
+                </div>
+            </section>
+
+            <!-- PAGE 22: SAVE POINT / RATING -->
+            <section class="level">
+                <div class="page-content items-center text-center">
+                    <h2 class="font-epic font-bold tracking-widest mb-2 uppercase text-sm text-gray-500">System Admin</h2>
+                    <h1 class="text-5xl md:text-7xl font-black text-white mb-10 tracking-tighter uppercase font-epic">SESSION SAVED</h1>
+
+                    <div class="space-y-4 max-w-xl w-full text-lg font-bold text-left mb-10 text-gray-300 font-base">
+                        <label class="flex items-center gap-4 p-5 ws-panel bg-black rounded border border-gray-700">
+                            <input type="checkbox" class="w-6 h-6 accent-ws-chiralGold" checked disabled>
+                            <span class="mt-1 text-white">Second Conditional Mastered.</span>
+                        </label>
+                        <label class="flex items-center gap-4 p-5 ws-panel bg-black rounded border border-gray-700">
+                            <input type="checkbox" class="w-6 h-6 accent-ws-chiralGold" checked disabled>
+                            <span class="mt-1 text-white">Philosophical Debate Completed.</span>
+                        </label>
+                    </div>
+
+                    <div class="border-t border-gray-800 pt-8 w-full flex flex-col items-center max-w-2xl mx-auto">
+                        <p class="mb-5 text-lg font-bold text-gray-400 uppercase tracking-widest font-epic">Evaluate the Connection:</p>
+                        <div class="flex justify-center gap-3 md:gap-6 mb-8">
+                            <button onclick="rate(1)" class="game-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">👍</button>
+                            <button onclick="rate(2)" class="game-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">👍</button>
+                            <button onclick="rate(3)" class="game-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">👍</button>
+                            <button onclick="rate(4)" class="game-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">👍</button>
+                            <button onclick="rate(5)" class="game-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">👍</button>
+                        </div>
+                        <div id="rat-hub" class="hidden p-4 ws-panel bg-black rounded font-bold text-base text-center uppercase tracking-widest text-ws-beachCyan w-max mx-auto font-epic border border-ws-beachCyan/50">> RECEIVED <span id="star-c" class="text-white mx-2 font-black text-2xl"></span> LIKES.</div>
+                        
+                        <button onclick="location.reload();" class="mt-12 ws-btn py-4 px-10 text-lg">
+                            DISCONNECT
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 left-0 w-full h-12 bg-black/95 backdrop-blur-md border-t border-ws-chiralDark z-40 flex items-center justify-center px-4 md:px-6 transition-colors shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+        <div class="flex-1 flex flex-col items-center justify-center px-4 md:px-12">
+            <div class="flex justify-between w-full max-w-2xl mb-1.5">
+                <span class="text-[10px] font-epic text-gray-500 font-bold tracking-widest uppercase">Network Link</span>
+                <span class="text-[10px] font-epic text-white font-bold tracking-widest uppercase">NODE <span id="level-num" class="text-ws-chiralGold text-sm mx-1">1</span>/<span id="total-levels">22</span></span>
+            </div>
+            <div class="w-full max-w-2xl bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800 shadow-inner">
+                <div id="xp-bar" class="h-full bg-gradient-to-r from-ws-chiralDark to-ws-chiralGold w-0 transition-all duration-700 shadow-[0_0_10px_#fbbf24]"></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Pagination Logic ---
+        let currentLevel = 0;
+        const levels = document.querySelectorAll('.level');
+        const totalLevels = levels.length; 
+        document.getElementById('total-levels').innerText = totalLevels;
+
+        function updateUI() {
+            document.getElementById('level-num').innerText = (currentLevel + 1);
+            const xpBar = document.getElementById('xp-bar');
+            if(totalLevels > 1) xpBar.style.width = `${(currentLevel / (totalLevels - 1)) * 100}%`;
+            
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(function(iframe) { 
+                const src = iframe.src; 
+                iframe.src = src; 
+            });
+            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToLevel(i) {
+            if (i < 0 || i >= totalLevels) return;
+            levels.forEach(function(l) { l.classList.remove('active'); });
+            currentLevel = i;
+            levels[currentLevel].classList.add('active');
+            updateUI();
+        }
+
+        function nextPage() { goToLevel(currentLevel + 1); }
+        function prevPage() { goToLevel(currentLevel - 1); }
+
+        document.addEventListener('keydown', function(e) {
+            if(e.key === 'ArrowRight') nextPage();
+            if(e.key === 'ArrowLeft') prevPage();
+        });
+
+        // --- 2. START & TOOLS ---
+        function pressStart() {
+            document.getElementById('start-btn').classList.add('hidden');
+            document.getElementById('loading-ui').classList.remove('hidden');
+            document.getElementById('loading-ui').classList.add('flex');
+            setTimeout(function() {
+                const screen = document.getElementById('loading-screen');
+                screen.style.opacity = '0';
+                setTimeout(function() { screen.style.display = 'none'; }, 1000);
+            }, 2500); 
+        }
+
+        function toggleFullscreen() {
+            const doc = window.document;
+            const docEl = doc.documentElement;
+            const req = docEl.requestFullscreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            const exit = doc.exitFullscreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+            try {
+                if (!doc.fullscreenElement) { req ? req.call(docEl) : null; } 
+                else { exit ? exit.call(doc) : null; }
+            } catch (err) {}
+        }
+
+        function toggleNotes() {
+            const notes = document.getElementById('notes-panel');
+            notes.classList.toggle('translate-x-full');
+        }
+
+        function toggleTools() {
+            const panel = document.getElementById('tools-panel');
+            panel.classList.toggle('hidden');
+            panel.classList.toggle('flex');
+        }
+
+        function triggerPraise(main, icon) {
+            const popup = document.getElementById('praise-popup');
+            document.getElementById('praise-text').innerText = main;
+            document.getElementById('praise-icon').innerHTML = icon;
+            popup.classList.remove('hidden');
+            popup.classList.remove('toast-anim');
+            void popup.offsetWidth; 
+            popup.classList.add('toast-anim');
+            setTimeout(function() { popup.classList.add('hidden'); }, 3000); 
+        }
+
+        function triggerBT() {
+            const overlay = document.getElementById('bt-overlay');
+            overlay.classList.remove('bt-attack');
+            void overlay.offsetWidth;
+            overlay.classList.add('bt-attack');
+        }
+
+        // --- 3. CLASS & LIKES ---
+        let playerClass = "";
+        let playerName = "Porter";
+        let likes = 0;
+
+        function selectClass(className, iconClass, btnElement) {
+            document.querySelectorAll('.class-card').forEach(function(c) { c.classList.remove('selected', 'border-ws-chiralGold', 'border-ws-beachCyan', 'border-ws-fragilePink'); });
+            
+            btnElement.classList.add('selected');
+            if(className === 'PORTER') btnElement.classList.add('border-ws-chiralGold');
+            if(className === 'BB OPERATOR') btnElement.classList.add('border-ws-beachCyan');
+            if(className === 'FRAGILE EXPRESS') btnElement.classList.add('border-ws-fragilePink');
+
+            playerClass = className;
+            document.getElementById('btn-confirm-char').disabled = false;
+            document.getElementById('btn-confirm-char').classList.remove('disabled-btn');
+        }
+
+        function confirmCharacter() {
+            const nameInput = document.getElementById('player-name-input').value.trim();
+            if(nameInput) playerName = nameInput;
+            document.getElementById('hud-player-name').innerText = `${playerName} [${playerClass}]`;
+            
+            addLikes(20);
+            nextPage();
+        }
+
+        function addLikes(amount) {
+            likes += amount;
+            const xpCounter = document.getElementById('xp-counter');
+            xpCounter.innerText = `${likes} LIKES`;
+            xpCounter.parentElement.classList.add('scale-110', 'bg-blue-900/50');
+            setTimeout(function() { xpCounter.parentElement.classList.remove('scale-110', 'bg-blue-900/50'); }, 400);
+        }
+
+        // --- 4. ODRADEK SCANNER (Vocabulary) ---
+        function triggerOdradekScan() {
+            const container = document.getElementById('odradek-trigger');
+            container.classList.add('scale-125', 'opacity-0');
+            
+            triggerPraise('TERRAIN SCANNED', '<i class="fas fa-wifi"></i>');
+            addLikes(50);
+            
+            setTimeout(() => {
+                container.style.display = 'none';
+                const cards = document.getElementById('holo-cards');
+                cards.classList.add('active');
+                
+                document.getElementById('btn-scan-next').classList.remove('hidden');
+            }, 500);
+        }
+
+        // --- 5. MATCHING GAME (TRIAL 3) ---
+        let selectedLeft = null;
+        let matchedCount = 0;
+        
+        function selectMatchSci(btn, side, id) {
+            if(btn.classList.contains('matched')) return;
+
+            if(side === 'left') {
+                document.querySelectorAll('.match-btn').forEach(function(b) { 
+                    if(b.parentElement.classList.contains('flex-col') && !b.classList.contains('matched') && b.closest('div').previousElementSibling === null) {
+                        b.classList.remove('selected');
+                    }
+                });
+                btn.classList.add('selected');
+                selectedLeft = { btn: btn, id: id };
+            } 
+            else if (side === 'right' && selectedLeft) {
+                if(selectedLeft.id === id) {
+                    btn.classList.add('matched');
+                    selectedLeft.btn.classList.remove('selected');
+                    selectedLeft.btn.classList.add('matched');
+                    selectedLeft = null;
+                    matchedCount++;
+                    addLikes(50);
+                    triggerPraise('LOGIC LINKED', '<i class="fas fa-link"></i>');
+                    
+                    if (matchedCount === 3) {
+                        const nextBtn = document.getElementById('btn-match-next');
+                        if(nextBtn) {
+                            nextBtn.classList.remove('hidden');
+                        }
+                    }
+                } else {
+                    btn.classList.add('wrong');
+                    selectedLeft.btn.classList.add('wrong');
+                    triggerBT();
+                    setTimeout(function() {
+                        btn.classList.remove('wrong');
+                        if(selectedLeft && !selectedLeft.btn.classList.contains('matched')) {
+                           selectedLeft.btn.classList.remove('wrong', 'selected');
+                        }
+                        selectedLeft = null;
+                    }, 500);
+                }
+            }
+        }
+
+        // --- 6. ANOMALY FINDER (TRIAL 4) ---
+        function checkAnomaly(btn, isMistake) {
+            if(isMistake) {
+                btn.innerText = btn.getAttribute('data-correct');
+                btn.classList.add('purged');
+                btn.classList.remove('anomaly-word');
+                triggerPraise('DATA RESTORED', '<i class="fas fa-check-circle"></i>');
+                addLikes(100);
+            } else {
+                btn.classList.add('wrong');
+                triggerBT();
+                setTimeout(() => btn.classList.remove('wrong'), 500);
+            }
+        }
+
+        // --- 7. GRAMMAR TRIALS ---
+        function checkTrialAnswer(btn, isCorrect) {
+            const siblings = btn.parentElement.children;
+            for(let i=0; i<siblings.length; i++) {
+                let s = siblings[i];
+                s.classList.remove('bg-ws-beachCyan', 'text-black', 'border-ws-beachCyan');
+                s.classList.add('bg-black', 'text-white', 'border-gray-700');
+            }
+            if(isCorrect) {
+                btn.classList.replace('bg-black', 'bg-ws-beachCyan');
+                btn.classList.replace('text-white', 'text-black');
+                btn.classList.replace('border-gray-700', 'border-ws-beachCyan');
+                addLikes(50);
+                triggerPraise('CORRECT', '<i class="fas fa-check"></i>');
+            } else {
+                btn.classList.replace('bg-black', 'bg-ws-blood');
+                btn.classList.replace('text-white', 'text-white');
+                btn.classList.replace('border-gray-700', 'border-ws-blood');
+                triggerBT();
+                setTimeout(function() {
+                    btn.classList.replace('bg-ws-blood', 'bg-black');
+                    btn.classList.replace('border-ws-blood', 'border-gray-700');
+                }, 1000);
+            }
+        }
+
+        // --- 8. PHILOSOPHICAL DILEMMA ---
+        function selectStance(btn) {
+            const siblings = btn.parentElement.children;
+            for(let s of siblings) {
+                s.classList.remove('bg-ws-chiralGold', 'text-black', 'bg-gray-800', 'border-white', 'border-gray-600');
+            }
+            
+            if(btn.dataset.stance === 'connect') {
+                 btn.classList.add('bg-ws-chiralGold', 'text-black');
+            } else {
+                 btn.classList.add('bg-gray-800', 'border-white');
+            }
+            
+            document.getElementById('stance-followup').classList.remove('hidden');
+            addLikes(50);
+        }
+
+        // --- 9. RATING ---
+        function rate(n) {
+            const drops = document.querySelectorAll('.game-rating');
+            drops.forEach(function(d, i) {
+                if (i >= n) {
+                    d.classList.add('grayscale', 'opacity-30');
+                    d.style.filter = "none";
+                } else {
+                    d.classList.remove('grayscale', 'opacity-30');
+                    d.style.filter = "drop-shadow(0 0 10px #fbbf24)";
+                }
+            });
+            document.getElementById('rat-hub').classList.remove('hidden');
+            document.getElementById('star-c').innerText = n * 100;
+            triggerPraise('EVALUATION SAVED', '<i class="fas fa-save"></i>');
+        }
+
+        // --- 10. NOTES PERSISTENCE ---
+        const notesTextarea = document.getElementById('class-notes');
+        if(localStorage.getItem('wolfstation_ds2_notes')) notesTextarea.value = localStorage.getItem('wolfstation_ds2_notes');
+        notesTextarea.addEventListener('input', function() { localStorage.setItem('wolfstation_ds2_notes', notesTextarea.value); });
+        
+        updateUI();
+    </script>
+</body>
+</html>
